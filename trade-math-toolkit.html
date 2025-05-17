@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Trade-Math Toolkit</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+      --midnight: #020c25;
+      --panel: #0f1733;
+      background: var(--midnight);
+      color: #d1d5db;
+    }
+    .card { background: var(--panel); }
+    input[type='number'],input[type='text']{
+      background:#0b1120;color:#e5e7eb;
+    }
+    .btn{background:#1e90ff;}
+    .btn:hover{background:#0075d4;}
+  </style>
+</head>
+<body class="font-sans max-w-4xl mx-auto py-10">
+  <h1 class="text-3xl sm:text-4xl font-bold text-center mb-10">
+    Day-Trading Math, Without the Headache 🤯
+  </h1>
+
+  <!-- Position Size Calculator -->
+  <section class="card rounded-2xl p-6 shadow-lg mb-10" id="position-size">
+    <h2 class="text-xl font-semibold mb-4">Position Size</h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div><label class="block mb-1">Account Balance ($)</label><input id="ps-balance" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Risk per Trade (%)</label><input id="ps-risk" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Stop-Loss Distance (points)</label><input id="ps-stop" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">$ per Point</label><input id="ps-value" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+    </div>
+    <button class="btn text-white font-bold py-2 px-4 rounded-xl mt-4" onclick="calcPositionSize()">Calculate</button>
+    <p class="mt-4">💼 Size: <span id="ps-output">—</span></p>
+  </section>
+
+  <!-- Risk-Reward Calculator -->
+  <section class="card rounded-2xl p-6 shadow-lg mb-10" id="risk-reward">
+    <h2 class="text-xl font-semibold mb-4">Risk-Reward</h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div><label class="block mb-1">Entry Price</label><input id="rr-entry" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Stop-Loss Price</label><input id="rr-stop" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Target Price</label><input id="rr-target" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Position Size</label><input id="rr-size" type="number" step="1" class="w-full p-2 rounded-md"/></div>
+    </div>
+    <button class="btn text-white font-bold py-2 px-4 rounded-xl mt-4" onclick="calcRiskReward()">Calculate</button>
+    <p class="mt-4">📈 R:R = <span id="rr-ratio">—</span></p>
+    <p>🔻 Risk $ = <span id="rr-risk">—</span> 🔺 Reward $ = <span id="rr-reward">—</span></p>
+  </section>
+
+  <!-- Profit / Loss Calculator -->
+  <section class="card rounded-2xl p-6 shadow-lg mb-10" id="profit-loss">
+    <h2 class="text-xl font-semibold mb-4">Profit / Loss</h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div><label class="block mb-1">Entry Price</label><input id="pl-entry" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Exit Price</label><input id="pl-exit" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Position Size</label><input id="pl-size" type="number" step="1" class="w-full p-2 rounded-md"/></div>
+    </div>
+    <button class="btn text-white font-bold py-2 px-4 rounded-xl mt-4" onclick="calcProfitLoss()">Calculate</button>
+    <p class="mt-4">💹 P/L = <span id="pl-output">—</span></p>
+  </section>
+
+  <!-- Compounded Return Calculator -->
+  <section class="card rounded-2xl p-6 shadow-lg mb-10" id="compound-return">
+    <h2 class="text-xl font-semibold mb-4">Compounded Return</h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div><label class="block mb-1">Initial Capital ($)</label><input id="cr-initial" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Return per Period (%)</label><input id="cr-return" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">Number of Periods</label><input id="cr-periods" type="number" step="1" class="w-full p-2 rounded-md"/></div>
+    </div>
+    <button class="btn text-white font-bold py-2 px-4 rounded-xl mt-4" onclick="calcCompoundReturn()">Calculate</button>
+    <p class="mt-4">🚀 Final Capital = <span id="cr-output">—</span></p>
+  </section>
+
+  <!-- Percentage Change Calculator -->
+  <section class="card rounded-2xl p-6 shadow-lg mb-10" id="percent-change">
+    <h2 class="text-xl font-semibold mb-4">Percentage Change</h2>
+    <div class="grid sm:grid-cols-2 gap-4">
+      <div><label class="block mb-1">Old Value</label><input id="pc-old" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+      <div><label class="block mb-1">New Value</label><input id="pc-new" type="number" step="0.01" class="w-full p-2 rounded-md"/></div>
+    </div>
+    <button class="btn text-white font-bold py-2 px-4 rounded-xl mt-4" onclick="calcPercentChange()">Calculate</button>
+    <p class="mt-4">📊 Change = <span id="pc-output">—</span></p>
+  </section>
+
+  <script>
+    const pretty = n => isFinite(n) ? n.toLocaleString(undefined,{maximumFractionDigits:2}) : '—';
+
+    function calcPositionSize(){
+      const balance=+ps-balance.value,riskPct=+ps-risk.value/100,stop=+ps-stop.value,val=+ps-value.value;
+      const size=(balance*riskPct)/(stop*val)||NaN;
+      document.getElementById('ps-output').textContent=pretty(Math.floor(size));
+    }
+    function calcRiskReward(){
+      const entry=+rr-entry.value,stop=+rr-stop.value,target=+rr-target.value,size=+rr-size.value;
+      const riskPer=Math.abs(entry-stop),rewardPer=Math.abs(target-entry);
+      rr-risk.textContent='$'+pretty(riskPer*size); rr-reward.textContent='$'+pretty(rewardPer*size);
+      rr-ratio.textContent=pretty(rewardPer/riskPer);
+    }
+    function calcProfitLoss(){
+      const pnl=(+pl-exit.value-+pl-entry.value)*(+pl-size.value);
+      pl-output.textContent='$'+pretty(pnl);
+    }
+    function calcCompoundReturn(){
+      const final=+cr-initial.value*Math.pow(1+(+cr-return.value/100),+cr-periods.value);
+      cr-output.textContent='$'+pretty(final);
+    }
+    function calcPercentChange(){
+      const change=((+pc-new.value-+pc-old.value)/(+pc-old.value))*100;
+      pc-output.textContent=pretty(change)+'%';
+    }
+  </script>
+</body>
+</html>
