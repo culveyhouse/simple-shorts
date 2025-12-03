@@ -23,8 +23,7 @@ export class Player {
   update(delta, camera) {
     this.handleRotation(delta);
     this.updateCamera(camera, delta);
-    this.handleMovement(delta);
-    this.mesh.rotation.y = this.yaw + Math.PI;
+    this.handleMovement(delta, camera);
     this.applyGroundSnap();
     this.mesh.position.copy(this.position);
   }
@@ -36,19 +35,39 @@ export class Player {
     this.pitch = Math.min(Math.max(this.pitch, -1.1), 0.2);
   }
 
-  handleMovement(delta) {
+  handleMovement(delta, camera) {
     const dir = this.input.getMoveVector();
     if (dir.lengthSq() > 0) {
       dir.normalize();
-      const rotDir = new THREE.Vector3();
-      rotDir.x = dir.x * Math.cos(this.yaw) - dir.z * Math.sin(this.yaw);
-      rotDir.z = dir.x * Math.sin(this.yaw) + dir.z * Math.cos(this.yaw);
-      rotDir.y = 0;
-      this.velocity.copy(rotDir).multiplyScalar(this.speed * delta);
+
+      const cameraForward = new THREE.Vector3();
+      camera.getWorldDirection(cameraForward);
+      cameraForward.y = 0;
+      cameraForward.normalize();
+
+      const cameraRight = new THREE.Vector3().crossVectors(cameraForward, new THREE.Vector3(0, 1, 0)).normalize();
+
+      const moveDir = new THREE.Vector3();
+      moveDir.addScaledVector(cameraForward, -dir.z);
+      moveDir.addScaledVector(cameraRight, dir.x);
+      moveDir.normalize();
+
+      this.velocity.copy(moveDir).multiplyScalar(this.speed * delta);
       this.position.add(this.velocity);
     } else {
       this.velocity.setScalar(0);
     }
+
+    this.alignToCamera(camera);
+  }
+
+  alignToCamera(camera) {
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    forward.y = 0;
+    if (forward.lengthSq() === 0) return;
+    forward.normalize();
+    this.mesh.rotation.y = Math.atan2(forward.x, forward.z);
   }
 
   applyGroundSnap() {
