@@ -70,8 +70,11 @@ export class Input {
     if (!this.isMobile) return;
     const touch = event.touches[0];
     if (!touch) return;
+    if (event.target === this.interactButton) {
+      this.queueInteract();
+      return;
+    }
     event.preventDefault();
-    if (event.target === this.interactButton) return;
 
     const leftZone = window.innerWidth * 0.7;
     const rect = this.joystick.getBoundingClientRect();

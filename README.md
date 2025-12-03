@@ -3,11 +3,10 @@
 A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.3.3**
-- What's new in v0.3.3:
-  - Softer assisted turning so slight left/right joystick nudges feel less dramatic.
-  - Collect button now brightens when you're close enough to interact and dims when you're out of range.
-  - Removed the nearest-cache readout for a cleaner HUD.
+- Current release: **v0.3.4**
+- What's new in v0.3.4:
+  - Collect button taps now register reliably as soon as the prompt lights up on touch devices.
+  - Directional turn assist is gentler so left/right nudges no longer cause wide arcs while moving forward.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
