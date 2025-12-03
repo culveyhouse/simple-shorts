@@ -5,7 +5,7 @@ import { Input } from './input.js';
 import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
-const VERSION = 'v0.2.4';
+const VERSION = 'v0.2.5';
 
 const canvasContainer = document.body;
 
