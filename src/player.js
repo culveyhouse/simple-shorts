@@ -23,10 +23,11 @@ export class Player {
 
   update(delta, camera) {
     this.handleRotation(delta);
+    this.updateCamera(camera, delta);
+    this.alignToCamera(camera);
     this.handleMovement(delta);
     this.applyGroundSnap();
     this.mesh.position.copy(this.position);
-    this.updateCamera(camera, delta);
   }
 
   handleRotation(delta) {
@@ -65,5 +66,15 @@ export class Player {
     const desiredPos = this.position.clone().add(offset);
     camera.position.lerp(desiredPos, 1 - Math.pow(0.001, delta));
     camera.lookAt(this.position.clone().add(new THREE.Vector3(0, 1, 0)));
+  }
+
+  alignToCamera(camera) {
+    const toPlayer = this.position.clone().sub(camera.position);
+    toPlayer.y = 0;
+    if (toPlayer.lengthSq() > 0.0001) {
+      const cameraYaw = Math.atan2(toPlayer.x, toPlayer.z);
+      this.yaw = cameraYaw;
+      this.mesh.rotation.y = cameraYaw + Math.PI;
+    }
   }
 }
