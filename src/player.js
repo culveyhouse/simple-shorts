@@ -22,8 +22,8 @@ export class Player {
 
   update(delta, camera) {
     this.handleRotation(delta);
+    this.handleMovement(delta);
     this.updateCamera(camera, delta);
-    this.handleMovement(delta, camera);
     this.applyGroundSnap();
     this.mesh.position.copy(this.position);
   }
@@ -35,39 +35,47 @@ export class Player {
     this.pitch = Math.min(Math.max(this.pitch, -1.1), 0.2);
   }
 
-  handleMovement(delta, camera) {
+  handleMovement(delta) {
     const dir = this.input.getMoveVector();
     if (dir.lengthSq() > 0) {
       dir.normalize();
 
-      const cameraForward = new THREE.Vector3();
-      camera.getWorldDirection(cameraForward);
-      cameraForward.y = 0;
-      cameraForward.normalize();
-
-      const cameraRight = new THREE.Vector3().crossVectors(cameraForward, new THREE.Vector3(0, 1, 0)).normalize();
+      const yawOnlyRot = new THREE.Euler(0, this.yaw, 0, 'YXZ');
+      const forward = new THREE.Vector3(0, 0, -1).applyEuler(yawOnlyRot).setY(0).normalize();
+      const right = new THREE.Vector3().crossVectors(forward, new THREE.Vector3(0, 1, 0)).normalize();
 
       const moveDir = new THREE.Vector3();
-      moveDir.addScaledVector(cameraForward, -dir.z);
-      moveDir.addScaledVector(cameraRight, dir.x);
-      moveDir.normalize();
+      moveDir.addScaledVector(forward, -dir.z);
+      moveDir.addScaledVector(right, dir.x);
 
-      this.velocity.copy(moveDir).multiplyScalar(this.speed * delta);
-      this.position.add(this.velocity);
+      if (moveDir.lengthSq() > 0) {
+        moveDir.normalize();
+        this.velocity.copy(moveDir).multiplyScalar(this.speed * delta);
+        this.position.add(this.velocity);
+        this.gentlyTurnToward(moveDir);
+      }
     } else {
       this.velocity.setScalar(0);
     }
 
-    this.alignToCamera(camera);
+    this.alignToCamera();
   }
 
-  alignToCamera(camera) {
-    const forward = new THREE.Vector3();
-    camera.getWorldDirection(forward);
-    forward.y = 0;
-    if (forward.lengthSq() === 0) return;
-    forward.normalize();
-    this.mesh.rotation.y = Math.atan2(forward.x, forward.z);
+  gentlyTurnToward(direction) {
+    const desiredYaw = Math.atan2(direction.x, direction.z);
+    const diff = this.normalizeAngle(desiredYaw - this.yaw);
+    const maxAssist = Math.PI / 3;
+    if (Math.abs(diff) > maxAssist) return;
+    const turnRate = 0.08;
+    this.yaw = this.normalizeAngle(this.yaw + diff * turnRate);
+  }
+
+  normalizeAngle(angle) {
+    return THREE.MathUtils.euclideanModulo(angle + Math.PI, Math.PI * 2) - Math.PI;
+  }
+
+  alignToCamera() {
+    this.mesh.rotation.y = this.yaw;
   }
 
   applyGroundSnap() {

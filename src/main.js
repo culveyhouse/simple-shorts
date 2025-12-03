@@ -5,7 +5,7 @@ import { Input } from './input.js';
 import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
-const VERSION = 'v0.3.0';
+const VERSION = 'v0.3.1';
 const BASE_MAP_SIZE = 140;
 
 const canvasContainer = document.body;
