@@ -23,9 +23,9 @@ function lerp(a, b, t) {
 }
 
 export class World {
-  constructor(seed) {
+  constructor(seed, { mapSize } = {}) {
     this.seed = seed;
-    this.worldSize = 140;
+    this.worldSize = mapSize ?? 140;
     this.gridResolution = 96;
     this.heightMap = [];
     this.heightScale = 6;

@@ -117,6 +117,17 @@ export class Input {
     return false;
   }
 
+  disableMobileControls() {
+    if (!this.isMobile) return;
+    this.moveVector.set(0, 0, 0);
+    this.touchOrigin = null;
+    this.lookTouch = false;
+    this.dragging = false;
+    this.knob.style.transform = 'translate(0px, 0px)';
+    this.joystick.style.display = 'none';
+    this.interactButton.style.display = 'none';
+  }
+
   getMoveVector() {
     const dir = new THREE.Vector3();
     if (this.keys.has('w') || this.keys.has('arrowup')) dir.z -= 1;
