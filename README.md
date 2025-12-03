@@ -3,12 +3,10 @@
 A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.2.0**
-- What's new in v0.2.0:
-  - Expanded mobile joystick activation and drag radius for smoother thumb control.
-  - Free-look camera drag on mobile (including vertical pitch) while idle, with character facing synced to camera.
-  - Camera drags now immediately rotate the character's facing so joystick "forward" matches what you see.
-  - Larger resource pickup radius plus automatic collection when you brush past a node.
+- Current release: **v0.2.1**
+- What's new in v0.2.1:
+  - Character facing now mirrors the camera's horizontal orientation, keeping forward movement aligned to your view.
+  - HUD now shows the build version alongside the session seed for quick verification.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
