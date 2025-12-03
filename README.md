@@ -2,9 +2,16 @@
 
 A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
+## Version
+- Current release: **v0.2.0**
+- What's new in v0.2.0:
+  - Expanded mobile joystick activation and drag radius for smoother thumb control.
+  - Free-look camera drag on mobile (including vertical pitch) while idle, with character facing synced to camera.
+  - Larger resource pickup radius plus automatic collection when you brush past a node.
+
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
-- Simple third-person character with WASD + drag-to-look controls; touch joystick and tap-to-collect for mobile.
+- Simple third-person character with WASD + drag-to-look controls; touch joystick and auto/tap-to-collect for mobile.
 - Sparse resources near camp to encourage exploration, plus a compass hint toward the nearest needed cache.
 - Lightweight assets (no build step); served via a single `index.html` + ES modules.
 
@@ -17,8 +24,8 @@ A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 
 2. Open `http://localhost:8080` (or your chosen port) in a modern browser.
 
 ## Controls
-- **Desktop:** WASD/arrow keys to move, drag the mouse to rotate, **E** to collect nearby resources.
-- **Mobile:** On-screen joystick to move, drag/right side to look, tap the **Collect** button or simply tap near a resource when close.
+- **Desktop:** WASD/arrow keys to move, drag the mouse to rotate (pitch and yaw), **E** to collect nearby resources.
+- **Mobile:** On-screen joystick (larger activation/drag area) to move, drag the right side to look freely even while idle, tap the **Collect** button or simply get close to a resource to auto-pickup.
 
 ## Project Layout
 - `index.html` – Canvas, HUD, mobile controls.

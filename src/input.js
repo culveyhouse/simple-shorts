@@ -14,6 +14,7 @@ export class Input {
     this.knob = this.joystick.querySelector('.knob');
     this.interactButton = document.getElementById('interact-btn');
     this.isMobile = window.matchMedia('(max-width: 900px)').matches;
+    this.lookTouch = false;
 
     this.bindEvents();
   }
@@ -58,14 +59,18 @@ export class Input {
     if (!this.isMobile) return;
     const touch = event.touches[0];
     if (!touch) return;
+    if (event.target === this.interactButton) return;
+
+    const leftZone = window.innerWidth * 0.7;
     const rect = this.joystick.getBoundingClientRect();
-    if (touch.clientX < window.innerWidth * 0.55) {
+    if (touch.clientX < leftZone) {
       this.touchOrigin = new THREE.Vector2(touch.clientX, touch.clientY);
       this.joystick.style.display = 'block';
       this.joystick.style.left = `${this.touchOrigin.x - rect.width / 2}px`;
       this.joystick.style.top = `${this.touchOrigin.y - rect.height / 2}px`;
     } else {
       this.dragging = true;
+      this.lookTouch = true;
       this.lastPointer = new THREE.Vector2(touch.clientX, touch.clientY);
     }
   }
@@ -73,14 +78,21 @@ export class Input {
   handleTouchMove(event) {
     if (!this.isMobile) return;
     const touch = event.touches[0];
-    if (!touch || !this.touchOrigin) return;
+    if (!touch) return;
     event.preventDefault();
     const current = new THREE.Vector2(touch.clientX, touch.clientY);
-    const delta = current.clone().sub(this.touchOrigin);
-    const maxDist = 40;
-    const clamped = delta.clone().clampLength(0, maxDist);
-    this.knob.style.transform = `translate(${clamped.x}px, ${clamped.y}px)`;
-    this.moveVector.set(clamped.x / maxDist, 0, -clamped.y / maxDist);
+
+    if (this.touchOrigin) {
+      const delta = current.clone().sub(this.touchOrigin);
+      const maxDist = 80;
+      const clamped = delta.clone().clampLength(0, maxDist);
+      this.knob.style.transform = `translate(${clamped.x}px, ${clamped.y}px)`;
+      this.moveVector.set(clamped.x / maxDist, 0, -clamped.y / maxDist);
+    } else if (this.lookTouch && this.dragging) {
+      const delta = current.clone().sub(this.lastPointer);
+      this.lookDelta.add(delta);
+      this.lastPointer = current;
+    }
   }
 
   handleTouchEnd() {
@@ -89,6 +101,7 @@ export class Input {
     this.touchOrigin = null;
     this.knob.style.transform = 'translate(0px, 0px)';
     this.joystick.style.display = 'block';
+    this.lookTouch = false;
     this.stopDrag();
   }
 

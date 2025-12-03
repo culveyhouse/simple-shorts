@@ -46,24 +46,34 @@ export class ResourceManager {
   }
 
   tryCollect(player, interacted) {
+    const proximityNode = this.findClosestWithin(player.position, 1.4);
+    if (proximityNode) {
+      this.collectNode(proximityNode);
+      return true;
+    }
+
     if (!interacted && !this.autoCollectTouch(player)) return false;
-    const node = this.findClosestWithin(player.position, 2.4);
+    const node = this.findClosestWithin(player.position, 3.2);
     if (!node) return false;
-    const type = node.userData.type;
-    this.counters[type] += 1;
-    node.visible = false;
-    this.nodes = this.nodes.filter((n) => n !== node);
-    this.scene.remove(node);
+    this.collectNode(node);
     return true;
   }
 
   autoCollectTouch(player) {
     // Allow tap-to-collect on mobile when close enough
-    const node = this.findClosestWithin(player.position, 1.8);
+    const node = this.findClosestWithin(player.position, 2.6);
     if (node && this.world && window.matchMedia('(max-width: 900px)').matches) {
       return true;
     }
     return false;
+  }
+
+  collectNode(node) {
+    const type = node.userData.type;
+    this.counters[type] += 1;
+    node.visible = false;
+    this.nodes = this.nodes.filter((n) => n !== node);
+    this.scene.remove(node);
   }
 
   findClosestWithin(origin, maxDistance) {
