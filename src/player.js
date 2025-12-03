@@ -66,7 +66,7 @@ export class Player {
     const diff = this.normalizeAngle(desiredYaw - this.yaw);
     const maxAssist = Math.PI / 3;
     if (Math.abs(diff) > maxAssist) return;
-    const turnRate = 0.08;
+    const turnRate = 0.03;
     this.yaw = this.normalizeAngle(this.yaw + diff * turnRate);
   }
 

@@ -9,6 +9,7 @@ export class Input {
     this.interactQueued = false;
     this.dragging = false;
     this.lastPointer = null;
+    this.nearestDistance = Infinity;
 
     this.joystick = document.getElementById('joystick');
     this.knob = this.joystick.querySelector('.knob');
@@ -17,6 +18,7 @@ export class Input {
     this.lookTouch = false;
 
     this.bindEvents();
+    this.updateInteractButtonState(Infinity);
   }
 
   bindEvents() {
@@ -34,6 +36,15 @@ export class Input {
     window.addEventListener('touchend', () => this.handleTouchEnd());
 
     this.interactButton.addEventListener('click', () => this.queueInteract());
+  }
+
+  updateInteractButtonState(distance) {
+    if (!this.interactButton) return;
+    this.nearestDistance = distance ?? Infinity;
+    const inRange = Number.isFinite(this.nearestDistance) && this.nearestDistance <= 3.2;
+    this.interactButton.disabled = !inRange;
+    this.interactButton.classList.toggle('ready', inRange);
+    this.interactButton.classList.toggle('out-of-range', !inRange);
   }
 
   startDrag(event) {
