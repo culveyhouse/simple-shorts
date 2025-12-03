@@ -83,6 +83,46 @@
       cursor: pointer;
       pointer-events: auto;
     }
+    #start-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.08), transparent 35%),
+        radial-gradient(circle at 80% 30%, rgba(255,255,255,0.04), transparent 30%),
+        rgba(0, 0, 0, 0.82);
+      z-index: 5;
+      padding: 16px;
+    }
+    #start-card {
+      max-width: 420px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid rgba(255,255,255,0.16);
+      border-radius: 14px;
+      padding: 18px 20px;
+      box-shadow: 0 18px 50px rgba(0,0,0,0.45);
+      color: #f4f5f7;
+      pointer-events: auto;
+    }
+    #start-card h2 { margin: 0 0 6px; }
+    #start-card p { margin: 0 0 12px; opacity: 0.8; }
+    #start-card label { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 6px; }
+    #start-card input[type=range] { width: 100%; accent-color: #3ecf8e; }
+    #start-card button {
+      margin-top: 12px;
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: none;
+      background: #3ecf8e;
+      color: #0b141a;
+      font-weight: 700;
+      cursor: pointer;
+      pointer-events: auto;
+      font-size: 15px;
+    }
     #joystick {
       position: absolute;
       left: 20px;
@@ -127,6 +167,15 @@
   </style>
 </head>
 <body>
+  <div id="start-overlay">
+    <div id="start-card">
+      <h2>Ready to explore?</h2>
+      <p>Pick a world size, then set out from your camp.</p>
+      <label for="map-size">Map size <span id="map-size-value"></span></label>
+      <input id="map-size" type="range" aria-label="Map size" />
+      <button id="start-btn">Start</button>
+    </div>
+  </div>
   <div id="ui">
     <div id="hud">
       <div class="pill">🌲 Wood: <span id="wood-count">0</span>/10</div>

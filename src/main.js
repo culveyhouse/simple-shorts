@@ -5,7 +5,8 @@ import { Input } from './input.js';
 import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
-const VERSION = 'v0.2.5';
+const VERSION = 'v0.3.0';
+const BASE_MAP_SIZE = 140;
 
 const canvasContainer = document.body;
 
@@ -46,12 +47,12 @@ function randomSeed() {
 }
 
 class Game {
-  constructor() {
+  constructor({ mapSize }) {
     this.seed = randomSeed();
     this.scene = createScene();
     this.renderer = createRenderer();
     this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
-    this.world = new World(this.seed);
+    this.world = new World(this.seed, { mapSize });
     this.input = new Input(this.renderer.domElement);
     this.player = new Player(this.world, this.input);
     this.resources = new ResourceManager(this.world, this.scene);
@@ -69,6 +70,7 @@ class Game {
 
     createLights(this.scene);
     this.lastTime = performance.now();
+    this.gameOver = false;
     window.addEventListener('resize', () => this.onResize());
     this.animate = this.animate.bind(this);
     requestAnimationFrame(this.animate);
@@ -90,8 +92,10 @@ class Game {
     if (collected) {
       this.ui.updateCounts(this.resources.counters);
       this.resources.updateCompass(this.player.position, this.ui);
-      if (this.resources.hasWon()) {
+      if (this.resources.hasWon() && !this.gameOver) {
+        this.gameOver = true;
         this.ui.showWin();
+        this.input.disableMobileControls();
       }
     } else {
       this.resources.updateCompass(this.player.position, this.ui);
@@ -109,6 +113,33 @@ class Game {
   }
 }
 
+function setupStartOverlay() {
+  const startOverlay = document.getElementById('start-overlay');
+  const startButton = document.getElementById('start-btn');
+  const slider = document.getElementById('map-size');
+  const label = document.getElementById('map-size-value');
+
+  if (!startOverlay || !startButton || !slider || !label) return;
+
+  const updateLabel = () => {
+    const multiplier = Number(slider.value);
+    const size = Math.round(BASE_MAP_SIZE * multiplier);
+    label.textContent = `${size}m (${multiplier}x)`;
+  };
+
+  slider.min = '1';
+  slider.max = '10';
+  slider.step = '1';
+  slider.value = '1';
+  updateLabel();
+
+  slider.addEventListener('input', updateLabel);
+  startButton.addEventListener('click', () => {
+    startOverlay.style.display = 'none';
+    new Game({ mapSize: BASE_MAP_SIZE * Number(slider.value) });
+  });
+}
+
 window.addEventListener('DOMContentLoaded', () => {
-  new Game();
+  setupStartOverlay();
 });
