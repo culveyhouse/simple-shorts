@@ -7,6 +7,7 @@ A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 
 - What's new in v0.2.0:
   - Expanded mobile joystick activation and drag radius for smoother thumb control.
   - Free-look camera drag on mobile (including vertical pitch) while idle, with character facing synced to camera.
+  - Camera drags now immediately rotate the character's facing so joystick "forward" matches what you see.
   - Larger resource pickup radius plus automatic collection when you brush past a node.
 
 ## Features
