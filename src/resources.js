@@ -52,7 +52,7 @@ export class ResourceManager {
     }
 
     if (!interacted && !this.autoCollectTouch(player)) return false;
-    const node = this.findClosestWithin(player.position, 3.2);
+    const node = this.findClosestWithin(player.position, 9.6);
     if (!node) return false;
     this.collectNode(node);
     return true;
@@ -60,7 +60,7 @@ export class ResourceManager {
 
   autoCollectTouch(player) {
     // Allow tap-to-collect on mobile when close enough
-    const node = this.findClosestWithin(player.position, 2.6);
+    const node = this.findClosestWithin(player.position, 7.8);
     if (node && this.world && window.matchMedia('(max-width: 900px)').matches) {
       return true;
     }

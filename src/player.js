@@ -52,7 +52,7 @@ export class Player {
         moveDir.normalize();
         this.velocity.copy(moveDir).multiplyScalar(this.speed * delta);
         this.position.add(this.velocity);
-        this.gentlyTurnToward(moveDir);
+        this.gentlyTurnToward(moveDir, delta);
       }
     } else {
       this.velocity.setScalar(0);
@@ -61,13 +61,13 @@ export class Player {
     this.alignToCamera();
   }
 
-  gentlyTurnToward(direction) {
+  gentlyTurnToward(direction, delta) {
     const desiredYaw = Math.atan2(-direction.x, -direction.z);
     const diff = this.normalizeAngle(desiredYaw - this.yaw);
     const maxAssist = Math.PI / 5;
     if (Math.abs(diff) > maxAssist) return;
-    const turnRate = 0.012;
-    this.yaw = this.normalizeAngle(this.yaw + diff * turnRate);
+    const assist = Math.min(5 * delta, 0.18);
+    this.yaw = this.normalizeAngle(this.yaw + diff * assist);
   }
 
   normalizeAngle(angle) {
