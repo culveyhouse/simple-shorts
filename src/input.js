@@ -87,7 +87,7 @@ export class Input {
       const maxDist = 80;
       const clamped = delta.clone().clampLength(0, maxDist);
       this.knob.style.transform = `translate(${clamped.x}px, ${clamped.y}px)`;
-      this.moveVector.set(clamped.x / maxDist, 0, -clamped.y / maxDist);
+      this.moveVector.set(clamped.x / maxDist, 0, clamped.y / maxDist);
     } else if (this.lookTouch && this.dragging) {
       const delta = current.clone().sub(this.lastPointer);
       this.lookDelta.add(delta);
