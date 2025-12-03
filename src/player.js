@@ -62,7 +62,7 @@ export class Player {
   }
 
   gentlyTurnToward(direction) {
-    const desiredYaw = Math.atan2(direction.x, direction.z);
+    const desiredYaw = Math.atan2(-direction.x, -direction.z);
     const diff = this.normalizeAngle(desiredYaw - this.yaw);
     const maxAssist = Math.PI / 3;
     if (Math.abs(diff) > maxAssist) return;
