@@ -59,6 +59,7 @@ export class Input {
     if (!this.isMobile) return;
     const touch = event.touches[0];
     if (!touch) return;
+    event.preventDefault();
     if (event.target === this.interactButton) return;
 
     const leftZone = window.innerWidth * 0.7;

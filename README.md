@@ -3,11 +3,10 @@
 A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.3.0**
-- What's new in v0.3.0:
-  - Added a pre-game start screen with a map size slider (1x–10x, defaulting to the original size) and a Start button.
-  - Map generation now respects the chosen size so you can roam a much larger world.
-  - On mobile, the joystick hides when you win so the restart button stays tappable.
+- Current release: **v0.3.1**
+- What's new in v0.3.1:
+  - Added touch-action and overscroll guards so the page no longer scrolls while dragging the mobile joystick.
+  - When moving within ±60° of the current facing direction, the camera and player gently yaw toward your movement so you can steer without pausing to drag.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
