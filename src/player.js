@@ -8,10 +8,9 @@ export class Player {
     this.position = new THREE.Vector3(0, world.getHeight(0, 0) + 2.6, 0);
     this.velocity = new THREE.Vector3();
     this.speed = 16;
-    this.turnSpeed = 0.08;
     this.yaw = 0;
-    this.pitch = -0.35;
-    this.targetCameraOffset = new THREE.Vector3(0, 4.2, 8);
+    this.pitch = -0.28;
+    this.targetCameraOffset = new THREE.Vector3(0, 5, 10);
 
     const bodyGeo = new THREE.CapsuleGeometry(0.7, 1.4, 4, 8);
     const bodyMat = new THREE.MeshStandardMaterial({ color: '#f6e8c3', flatShading: true });
@@ -24,8 +23,7 @@ export class Player {
   update(delta, camera) {
     this.handleRotation(delta);
     this.updateCamera(camera, delta);
-    this.alignToCamera(camera);
-    this.handleMovement(delta);
+    this.handleMovement(delta, camera);
     this.applyGroundSnap();
     this.mesh.position.copy(this.position);
   }
@@ -35,22 +33,41 @@ export class Player {
     this.yaw -= look.x * 0.003;
     this.pitch -= look.y * 0.003;
     this.pitch = Math.min(Math.max(this.pitch, -1.1), 0.2);
-    this.mesh.rotation.y = this.yaw + Math.PI;
   }
 
-  handleMovement(delta) {
+  handleMovement(delta, camera) {
     const dir = this.input.getMoveVector();
     if (dir.lengthSq() > 0) {
       dir.normalize();
-      const rotDir = new THREE.Vector3();
-      rotDir.x = dir.x * Math.cos(this.yaw) - dir.z * Math.sin(this.yaw);
-      rotDir.z = dir.x * Math.sin(this.yaw) + dir.z * Math.cos(this.yaw);
-      rotDir.y = 0;
-      this.velocity.copy(rotDir).multiplyScalar(this.speed * delta);
+
+      const cameraForward = new THREE.Vector3();
+      camera.getWorldDirection(cameraForward);
+      cameraForward.y = 0;
+      cameraForward.normalize();
+
+      const cameraRight = new THREE.Vector3().crossVectors(cameraForward, new THREE.Vector3(0, 1, 0)).normalize();
+
+      const moveDir = new THREE.Vector3();
+      moveDir.addScaledVector(cameraForward, -dir.z);
+      moveDir.addScaledVector(cameraRight, dir.x);
+      moveDir.normalize();
+
+      this.velocity.copy(moveDir).multiplyScalar(this.speed * delta);
       this.position.add(this.velocity);
     } else {
       this.velocity.setScalar(0);
     }
+
+    this.alignToCamera(camera);
+  }
+
+  alignToCamera(camera) {
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    forward.y = 0;
+    if (forward.lengthSq() === 0) return;
+    forward.normalize();
+    this.mesh.rotation.y = Math.atan2(forward.x, forward.z);
   }
 
   applyGroundSnap() {
@@ -65,18 +82,6 @@ export class Player {
     offset.applyEuler(rot);
     const desiredPos = this.position.clone().add(offset);
     camera.position.lerp(desiredPos, 1 - Math.pow(0.001, delta));
-    camera.lookAt(this.position.clone().add(new THREE.Vector3(0, 1, 0)));
-  }
-
-  alignToCamera(camera) {
-    const forward = new THREE.Vector3();
-    camera.getWorldDirection(forward);
-    forward.y = 0;
-    if (forward.lengthSq() > 0.0001) {
-      forward.normalize();
-      const cameraYaw = Math.atan2(forward.x, forward.z);
-      this.yaw = cameraYaw;
-      this.mesh.rotation.y = cameraYaw + Math.PI;
-    }
+    camera.lookAt(this.position.clone().add(new THREE.Vector3(0, 1.2, 0)));
   }
 }
