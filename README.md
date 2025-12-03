@@ -3,15 +3,16 @@
 A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.3.2**
-- What's new in v0.3.2:
-  - Gentle auto-turning now activates when moving forward within ±60° of your facing direction (instead of backward), making steering feel natural again.
-  - Added touch-action and overscroll guards so the page no longer scrolls while dragging the mobile joystick.
+- Current release: **v0.3.3**
+- What's new in v0.3.3:
+  - Softer assisted turning so slight left/right joystick nudges feel less dramatic.
+  - Collect button now brightens when you're close enough to interact and dims when you're out of range.
+  - Removed the nearest-cache readout for a cleaner HUD.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
 - Simple third-person character with WASD + drag-to-look controls; touch joystick and auto/tap-to-collect for mobile.
-- Sparse resources near camp to encourage exploration, plus a compass hint toward the nearest needed cache.
+- Sparse resources near camp to encourage exploration without explicit compass hints.
 - Lightweight assets (no build step); served via a single `index.html` + ES modules.
 
 ## Getting Started
@@ -31,7 +32,7 @@ A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 
 - `src/main.js` – Game bootstrap and loop.
 - `src/world.js` – Terrain generation, camp, and seeding.
 - `src/player.js` – Third-person controller and camera follow.
-- `src/resources.js` – Resource nodes, collection logic, and compass hinting.
+- `src/resources.js` – Resource nodes and collection logic.
 - `src/input.js` – Keyboard/mouse/touch input handling.
 - `src/ui.js` – HUD updates and win screen.
 

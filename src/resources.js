@@ -14,7 +14,6 @@ export class ResourceManager {
     this.scene = scene;
     this.nodes = [];
     this.counters = { wood: 0, stone: 0, corn: 0 };
-    this.compassTarget = null;
   }
 
   spawnResource(type, position) {
@@ -89,41 +88,14 @@ export class ResourceManager {
     return closest;
   }
 
-  updateCompass(playerPos, ui) {
-    if (this.hasWon()) {
-      ui.setCompass('All done!');
-      return;
-    }
-    let target = this.compassTarget;
-    if (!target || !this.nodes.includes(target)) {
-      target = this.findNearestNeeded(playerPos);
-      this.compassTarget = target;
-    }
-    if (!target) {
-      ui.setCompass('Explore to find resources');
-      return;
-    }
-    const dir = target.position.clone().sub(playerPos);
-    const distance = dir.length();
-    dir.normalize();
-    const angle = Math.atan2(dir.x, dir.z);
-    const degrees = THREE.MathUtils.radToDeg(angle);
-    ui.setCompass(`Nearest cache: ${distance.toFixed(1)}m at ${degrees.toFixed(0)}°`);
-  }
-
-  findNearestNeeded(playerPos) {
-    const missingTypes = ['wood', 'stone', 'corn'].filter((t) => this.counters[t] < TARGET);
-    let closest = null;
+  getNearestDistance(playerPos) {
+    if (this.nodes.length === 0) return Infinity;
     let best = Infinity;
     this.nodes.forEach((node) => {
-      if (!missingTypes.includes(node.userData.type)) return;
       const d = playerPos.distanceTo(node.position);
-      if (d < best) {
-        best = d;
-        closest = node;
-      }
+      if (d < best) best = d;
     });
-    return closest;
+    return best;
   }
 
   hasWon() {

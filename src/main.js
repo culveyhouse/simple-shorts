@@ -5,7 +5,7 @@ import { Input } from './input.js';
 import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
-const VERSION = 'v0.3.2';
+const VERSION = 'v0.3.3';
 const BASE_MAP_SIZE = 140;
 
 const canvasContainer = document.body;
@@ -88,17 +88,17 @@ class Game {
 
   update(delta) {
     this.player.update(delta, this.camera);
+    const nearestDistance = this.resources.getNearestDistance(this.player.position);
+    this.input.updateInteractButtonState(nearestDistance);
+
     const collected = this.resources.tryCollect(this.player, this.input.consumeInteract());
     if (collected) {
       this.ui.updateCounts(this.resources.counters);
-      this.resources.updateCompass(this.player.position, this.ui);
       if (this.resources.hasWon() && !this.gameOver) {
         this.gameOver = true;
         this.ui.showWin();
         this.input.disableMobileControls();
       }
-    } else {
-      this.resources.updateCompass(this.player.position, this.ui);
     }
     this.world.updateCampFire(delta);
   }

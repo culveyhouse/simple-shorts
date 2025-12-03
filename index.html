@@ -58,17 +58,6 @@
       border-radius: 4px;
       pointer-events: none;
     }
-    #message {
-      align-self: center;
-      margin-top: 20px;
-      padding: 10px 14px;
-      background: rgba(0,0,0,0.55);
-      border: 1px solid rgba(255,255,255,0.12);
-      border-radius: 10px;
-      text-align: center;
-      min-width: 220px;
-      pointer-events: none;
-    }
     #win {
       position: absolute;
       top: 50%;
@@ -161,13 +150,25 @@
       bottom: 36px;
       padding: 12px 16px;
       border-radius: 12px;
-      background: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.14);
       color: #0b141a;
       font-weight: 700;
       border: none;
       display: none;
       pointer-events: auto;
       touch-action: manipulation;
+      transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+      opacity: 0.8;
+    }
+    #interact-btn.ready {
+      background: #3ecf8e;
+      color: #0b141a;
+      opacity: 1;
+    }
+    #interact-btn.out-of-range {
+      background: rgba(255,255,255,0.08);
+      color: #6f7781;
+      opacity: 0.65;
     }
     @media (max-width: 900px) {
       #joystick, #interact-btn { display: block; }
@@ -192,7 +193,6 @@
       <div class="pill">🌽 Corn: <span id="corn-count">0</span>/10</div>
       <div class="pill legend">WASD/drag to move + look, E/tap to collect</div>
     </div>
-    <div id="message">Collect 10 wood, 10 stone, and 10 corn. Explore outward for more resources.</div>
   </div>
   <div id="seed"></div>
   <div id="win">
