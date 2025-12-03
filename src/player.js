@@ -69,10 +69,12 @@ export class Player {
   }
 
   alignToCamera(camera) {
-    const toPlayer = this.position.clone().sub(camera.position);
-    toPlayer.y = 0;
-    if (toPlayer.lengthSq() > 0.0001) {
-      const cameraYaw = Math.atan2(toPlayer.x, toPlayer.z);
+    const forward = new THREE.Vector3();
+    camera.getWorldDirection(forward);
+    forward.y = 0;
+    if (forward.lengthSq() > 0.0001) {
+      forward.normalize();
+      const cameraYaw = Math.atan2(forward.x, forward.z);
       this.yaw = cameraYaw;
       this.mesh.rotation.y = cameraYaw + Math.PI;
     }

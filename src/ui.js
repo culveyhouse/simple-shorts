@@ -1,5 +1,5 @@
 export class UIOverlay {
-  constructor({ seed, onRestart }) {
+  constructor({ version, seed, onRestart }) {
     this.seedEl = document.getElementById('seed');
     this.woodEl = document.getElementById('wood-count');
     this.stoneEl = document.getElementById('stone-count');
@@ -7,7 +7,7 @@ export class UIOverlay {
     this.messageEl = document.getElementById('message');
     this.winEl = document.getElementById('win');
     this.restartBtn = document.getElementById('restart');
-    this.seedEl.textContent = `Seed: ${seed}`;
+    this.seedEl.textContent = `${version} • Seed: ${seed}`;
     this.restartBtn.addEventListener('click', onRestart);
     this.compassText = 'Explore to find resources';
   }

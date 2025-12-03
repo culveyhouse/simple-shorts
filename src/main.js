@@ -5,6 +5,8 @@ import { Input } from './input.js';
 import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
+const VERSION = 'v0.2.1';
+
 const canvasContainer = document.body;
 
 function createRenderer() {
@@ -54,6 +56,7 @@ class Game {
     this.player = new Player(this.world, this.input);
     this.resources = new ResourceManager(this.world, this.scene);
     this.ui = new UIOverlay({
+      version: VERSION,
       seed: this.seed,
       onRestart: () => this.restart(),
     });
