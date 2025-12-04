@@ -38,3 +38,4 @@ A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 
 ## Notes
 - Each reload generates a new seed; copy the seed in the lower-right corner if you want to replay the same layout.
 - Performance is tuned for simplicity—no build steps or heavy dependencies. If you need more polish later, you can swap meshes for higher-detail models without changing the core loop. 
+- added a quick test branch to try to re-trigger publishing the github pages.
