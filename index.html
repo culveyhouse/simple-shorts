@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Voxel Camp Explorer</title>
+  <meta name="description" content="A tiny low-poly voxel exploration game. Collect resources around your camp with third-person controls on desktop and mobile." />
+  <meta name="theme-color" content="#0e0f12" />
+  <meta property="og:title" content="Crash and Rescue" />
+  <meta property="og:description" content="A tiny low-poly voxel exploration game. Collect resources around your camp with third-person controls on desktop and mobile." />
+  <meta property="og:type" content="website" />
+  <title>Crash and Rescue</title>
   <style>
     * { box-sizing: border-box; }
     html, body {
@@ -187,7 +192,7 @@
   <div id="start-overlay">
     <div id="start-card">
       <h2>Ready to explore?</h2>
-      <p>Pick a world size, then set out from your camp.</p>
+      <p>Choose a world size and start gathering resources around your camp.</p>
       <label for="map-size">Map size <span id="map-size-value"></span></label>
       <input id="map-size" type="range" aria-label="Map size" />
       <button id="start-btn">Start</button>
@@ -204,7 +209,7 @@
   <div id="seed"></div>
   <div id="win">
     <h2>All gathered!</h2>
-    <p>You collected everything. Nice exploring.</p>
+    <p>You collected everything. Great exploring!</p>
     <button id="restart">Restart</button>
   </div>
   <div id="joystick"><div class="knob"></div></div>
