@@ -6,21 +6,29 @@ import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
 const GAME_TUNING = {
-  version: 'v0.3.6',
+  version: 'v0.3.7', // HUD/version label shown in-game
   map: {
-    baseSize: 140,
-    slider: { min: 1, max: 10, step: 1, default: 1 },
+    baseSize: 140, // Default map edge length in meters
+    slider: {
+      min: 1, // Minimum multiplier for map size
+      max: 10, // Maximum multiplier for map size
+      step: 1, // Step size for slider adjustments
+      default: 1, // Default multiplier on load
+    },
+  },
+  terrain: {
+    maxHeight: 6, // Peak terrain height multiplier for hills
   },
   collection: {
-    proximityCollectRange: 1.4,
-    interactCollectRange: 9.6,
-    touchAutoCollectRange: 7.8,
-    interactButtonRange: 3.2,
+    proximityCollectRange: 1.4, // Auto-collect radius when extremely close
+    interactCollectRange: 9.6, // Maximum reach for manual collect checks
+    touchAutoCollectRange: 7.8, // Mobile auto-collect bubble when moving past
+    interactButtonRange: 3.2, // Range threshold for enabling the Collect button
   },
   turnAssist: {
-    arcRadians: Math.PI / 5,
-    strengthScale: 5,
-    strengthMax: 0.18,
+    arcRadians: Math.PI / 5, // Aim cone angle for steering assistance
+    strengthScale: 5, // Multiplier applied to assist strength
+    strengthMax: 0.18, // Upper clamp for turn assist influence
   },
 };
 
@@ -68,7 +76,7 @@ class Game {
     this.scene = createScene();
     this.renderer = createRenderer();
     this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
-    this.world = new World(this.seed, { mapSize });
+    this.world = new World(this.seed, { mapSize, heightScale: this.tuning.terrain.maxHeight });
     this.tuning = GAME_TUNING;
     this.input = new Input(this.renderer.domElement, this.tuning.collection);
     this.player = new Player(this.world, this.input, this.tuning.turnAssist);

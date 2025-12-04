@@ -3,10 +3,10 @@
 A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.3.6**
-- What's new in v0.3.6:
-  - Centralized map sizing, collection ranges, and steering assist tuning in one config for quicker balancing.
-  - Kept the control-hint chip pinned to the lower left so it stays visible without wrapping on mobile.
+- Current release: **v0.3.7**
+- What's new in v0.3.7:
+  - Added a terrain height multiplier to the tuning block so you can quickly dial in hilliness.
+  - Unified the HUD chip styling in every corner with matching rounded panels and pills.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
