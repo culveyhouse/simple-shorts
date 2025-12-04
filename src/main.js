@@ -5,8 +5,24 @@ import { Input } from './input.js';
 import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
-const VERSION = 'v0.3.5';
-const BASE_MAP_SIZE = 140;
+const GAME_TUNING = {
+  version: 'v0.3.6',
+  map: {
+    baseSize: 140,
+    slider: { min: 1, max: 10, step: 1, default: 1 },
+  },
+  collection: {
+    proximityCollectRange: 1.4,
+    interactCollectRange: 9.6,
+    touchAutoCollectRange: 7.8,
+    interactButtonRange: 3.2,
+  },
+  turnAssist: {
+    arcRadians: Math.PI / 5,
+    strengthScale: 5,
+    strengthMax: 0.18,
+  },
+};
 
 const canvasContainer = document.body;
 
@@ -53,11 +69,12 @@ class Game {
     this.renderer = createRenderer();
     this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
     this.world = new World(this.seed, { mapSize });
-    this.input = new Input(this.renderer.domElement);
-    this.player = new Player(this.world, this.input);
-    this.resources = new ResourceManager(this.world, this.scene);
+    this.tuning = GAME_TUNING;
+    this.input = new Input(this.renderer.domElement, this.tuning.collection);
+    this.player = new Player(this.world, this.input, this.tuning.turnAssist);
+    this.resources = new ResourceManager(this.world, this.scene, this.tuning.collection);
     this.ui = new UIOverlay({
-      version: VERSION,
+      version: this.tuning.version,
       seed: this.seed,
       onRestart: () => this.restart(),
     });
@@ -123,20 +140,20 @@ function setupStartOverlay() {
 
   const updateLabel = () => {
     const multiplier = Number(slider.value);
-    const size = Math.round(BASE_MAP_SIZE * multiplier);
+    const size = Math.round(GAME_TUNING.map.baseSize * multiplier);
     label.textContent = `${size}m (${multiplier}x)`;
   };
 
-  slider.min = '1';
-  slider.max = '10';
-  slider.step = '1';
-  slider.value = '1';
+  slider.min = `${GAME_TUNING.map.slider.min}`;
+  slider.max = `${GAME_TUNING.map.slider.max}`;
+  slider.step = `${GAME_TUNING.map.slider.step}`;
+  slider.value = `${GAME_TUNING.map.slider.default}`;
   updateLabel();
 
   slider.addEventListener('input', updateLabel);
   startButton.addEventListener('click', () => {
     startOverlay.style.display = 'none';
-    new Game({ mapSize: BASE_MAP_SIZE * Number(slider.value) });
+    new Game({ mapSize: GAME_TUNING.map.baseSize * Number(slider.value) });
   });
 }
 
