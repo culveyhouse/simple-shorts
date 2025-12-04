@@ -28,15 +28,18 @@
       flex-direction: column;
       justify-content: space-between;
       padding: 12px;
+      gap: 12px;
     }
-    #hud {
-      display: flex;
+    .panel {
+      display: inline-flex;
+      align-items: center;
       gap: 10px;
       font-size: 14px;
       padding: 6px 10px;
       background: rgba(0,0,0,0.35);
       border-radius: 8px;
       width: fit-content;
+      pointer-events: none;
     }
     .pill {
       display: inline-flex;
@@ -47,13 +50,13 @@
       background: rgba(255,255,255,0.08);
     }
     .legend { opacity: 0.8; font-size: 13px; }
-    #control-hint {
-      position: absolute;
-      left: 12px;
-      bottom: 12px;
-      white-space: nowrap;
-      pointer-events: none;
+    #bottom-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      width: 100%;
     }
+    #control-panel { align-items: center; }
     #seed {
       position: absolute;
       right: 8px;
@@ -151,13 +154,11 @@
       background: rgba(255,255,255,0.18);
       transform: translate(0,0);
     }
+    #action-panel { display: none; }
     #interact-btn {
-      position: absolute;
-      right: 24px;
-      bottom: 36px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      background: rgba(255,255,255,0.14);
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.12);
       color: #0b141a;
       font-weight: 700;
       border: none;
@@ -165,7 +166,8 @@
       pointer-events: auto;
       touch-action: manipulation;
       transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
-      opacity: 0.8;
+      opacity: 0.85;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.28);
     }
     #interact-btn.ready {
       background: #3ecf8e;
@@ -179,6 +181,7 @@
     }
     @media (max-width: 900px) {
       #joystick, #interact-btn { display: block; }
+      #action-panel { display: inline-flex; }
       #hud { font-size: 13px; }
     }
   </style>
@@ -194,12 +197,19 @@
     </div>
   </div>
   <div id="ui">
-    <div id="hud">
+    <div id="hud" class="panel">
       <div class="pill">🌲 Wood: <span id="wood-count">0</span>/10</div>
       <div class="pill">🪨 Stone: <span id="stone-count">0</span>/10</div>
       <div class="pill">🌽 Corn: <span id="corn-count">0</span>/10</div>
     </div>
-    <div id="control-hint" class="pill legend">WASD/drag to move + look, E/tap to collect</div>
+    <div id="bottom-row">
+      <div id="control-panel" class="panel">
+        <div id="control-hint" class="pill legend">WASD/drag to move + look, E/tap to collect</div>
+      </div>
+      <div id="action-panel" class="panel">
+        <button id="interact-btn">Collect</button>
+      </div>
+    </div>
   </div>
   <div id="seed"></div>
   <div id="win">
@@ -208,7 +218,6 @@
     <button id="restart">Restart</button>
   </div>
   <div id="joystick"><div class="knob"></div></div>
-  <button id="interact-btn">Collect</button>
   <script type="module" src="src/main.js"></script>
 </body>
 </html>

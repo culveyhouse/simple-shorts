@@ -23,12 +23,12 @@ function lerp(a, b, t) {
 }
 
 export class World {
-  constructor(seed, { mapSize } = {}) {
+  constructor(seed, { mapSize, heightScale } = {}) {
     this.seed = seed;
     this.worldSize = mapSize ?? 140;
     this.gridResolution = 96;
     this.heightMap = [];
-    this.heightScale = 6;
+    this.heightScale = heightScale ?? 6;
     this.noiseScale = 14;
     this.rng = mulberry32(hashString(seed));
     this.mesh = this.buildTerrain();
@@ -61,7 +61,7 @@ export class World {
 
   getHeight(x, z) {
     const base = this.noise(x + 50, z + 50) * this.heightScale;
-    const detail = this.noise(x * 2.5 + 100, z * 2.5 + 100) * 1.5;
+    const detail = this.noise(x * 2.5 + 100, z * 2.5 + 100) * (this.heightScale * 0.25);
     return base + detail;
   }
 
