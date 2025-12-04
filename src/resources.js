@@ -9,11 +9,12 @@ const RESOURCE_COLORS = {
 const TARGET = 10;
 
 export class ResourceManager {
-  constructor(world, scene) {
+  constructor(world, scene, collectionConfig = {}) {
     this.world = world;
     this.scene = scene;
     this.nodes = [];
     this.counters = { wood: 0, stone: 0, corn: 0 };
+    this.collectionConfig = collectionConfig;
   }
 
   spawnResource(type, position) {
@@ -45,14 +46,20 @@ export class ResourceManager {
   }
 
   tryCollect(player, interacted) {
-    const proximityNode = this.findClosestWithin(player.position, 1.4);
+    const proximityNode = this.findClosestWithin(
+      player.position,
+      this.collectionConfig.proximityCollectRange ?? 1.4,
+    );
     if (proximityNode) {
       this.collectNode(proximityNode);
       return true;
     }
 
     if (!interacted && !this.autoCollectTouch(player)) return false;
-    const node = this.findClosestWithin(player.position, 9.6);
+    const node = this.findClosestWithin(
+      player.position,
+      this.collectionConfig.interactCollectRange ?? 9.6,
+    );
     if (!node) return false;
     this.collectNode(node);
     return true;
@@ -60,7 +67,10 @@ export class ResourceManager {
 
   autoCollectTouch(player) {
     // Allow tap-to-collect on mobile when close enough
-    const node = this.findClosestWithin(player.position, 7.8);
+    const node = this.findClosestWithin(
+      player.position,
+      this.collectionConfig.touchAutoCollectRange ?? 7.8,
+    );
     if (node && this.world && window.matchMedia('(max-width: 900px)').matches) {
       return true;
     }

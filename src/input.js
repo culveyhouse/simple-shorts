@@ -1,7 +1,7 @@
 import * as THREE from 'https://unpkg.com/three@0.161.0/build/three.module.js';
 
 export class Input {
-  constructor(canvas) {
+  constructor(canvas, collectionConfig = {}) {
     this.canvas = canvas;
     this.keys = new Set();
     this.lookDelta = new THREE.Vector2();
@@ -16,6 +16,7 @@ export class Input {
     this.interactButton = document.getElementById('interact-btn');
     this.isMobile = window.matchMedia('(max-width: 900px)').matches;
     this.lookTouch = false;
+    this.interactRange = collectionConfig.interactButtonRange ?? 3.2;
 
     this.bindEvents();
     this.updateInteractButtonState(Infinity);
@@ -41,7 +42,7 @@ export class Input {
   updateInteractButtonState(distance) {
     if (!this.interactButton) return;
     this.nearestDistance = distance ?? Infinity;
-    const inRange = Number.isFinite(this.nearestDistance) && this.nearestDistance <= 3.2;
+    const inRange = Number.isFinite(this.nearestDistance) && this.nearestDistance <= this.interactRange;
     this.interactButton.disabled = !inRange;
     this.interactButton.classList.toggle('ready', inRange);
     this.interactButton.classList.toggle('out-of-range', !inRange);

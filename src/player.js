@@ -2,9 +2,10 @@ import * as THREE from 'https://unpkg.com/three@0.161.0/build/three.module.js';
 
 
 export class Player {
-  constructor(world, input) {
+  constructor(world, input, turnAssistConfig = {}) {
     this.world = world;
     this.input = input;
+    this.turnAssistConfig = turnAssistConfig;
     this.position = new THREE.Vector3(0, world.getHeight(0, 0) + 2.6, 0);
     this.velocity = new THREE.Vector3();
     this.speed = 16;
@@ -64,9 +65,11 @@ export class Player {
   gentlyTurnToward(direction, delta) {
     const desiredYaw = Math.atan2(-direction.x, -direction.z);
     const diff = this.normalizeAngle(desiredYaw - this.yaw);
-    const maxAssist = Math.PI / 5;
+    const maxAssist = this.turnAssistConfig.arcRadians ?? Math.PI / 5;
     if (Math.abs(diff) > maxAssist) return;
-    const assist = Math.min(5 * delta, 0.18);
+    const assistScale = this.turnAssistConfig.strengthScale ?? 5;
+    const assistCap = this.turnAssistConfig.strengthMax ?? 0.18;
+    const assist = Math.min(assistScale * delta, assistCap);
     this.yaw = this.normalizeAngle(this.yaw + diff * assist);
   }
 
