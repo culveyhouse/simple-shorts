@@ -1,6 +1,6 @@
-# Voxel Camp Explorer
+# Crash and Rescue
 
-A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
+A tiny low-poly voxel exploration game built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
 - Current release: **v0.3.6**
