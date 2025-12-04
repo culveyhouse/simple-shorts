@@ -6,7 +6,7 @@ import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
 const GAME_TUNING = {
-  version: 'v0.3.5',
+  version: 'v0.3.6',
   map: {
     baseSize: 140,
     slider: { min: 1, max: 10, step: 1, default: 1 },

@@ -47,6 +47,13 @@
       background: rgba(255,255,255,0.08);
     }
     .legend { opacity: 0.8; font-size: 13px; }
+    #control-hint {
+      position: absolute;
+      left: 12px;
+      bottom: 12px;
+      white-space: nowrap;
+      pointer-events: none;
+    }
     #seed {
       position: absolute;
       right: 8px;
@@ -191,8 +198,8 @@
       <div class="pill">🌲 Wood: <span id="wood-count">0</span>/10</div>
       <div class="pill">🪨 Stone: <span id="stone-count">0</span>/10</div>
       <div class="pill">🌽 Corn: <span id="corn-count">0</span>/10</div>
-      <div class="pill legend">WASD/drag to move + look, E/tap to collect</div>
     </div>
+    <div id="control-hint" class="pill legend">WASD/drag to move + look, E/tap to collect</div>
   </div>
   <div id="seed"></div>
   <div id="win">
