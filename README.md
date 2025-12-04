@@ -1,4 +1,4 @@
-# Voxel Camp Explorer
+# Pocket Wilder
 
 A tiny low-poly voxel exploration demo built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
