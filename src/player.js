@@ -12,6 +12,8 @@ export class Player {
     this.yaw = 0;
     this.pitch = -0.28;
     this.targetCameraOffset = new THREE.Vector3(0, 5, 10);
+    this.atBoundary = false;
+    this.boundaryMargin = 5; // Distance from edge to start showing warning
 
     const bodyGeo = new THREE.CapsuleGeometry(0.7, 1.4, 4, 8);
     const bodyMat = new THREE.MeshStandardMaterial({ color: '#f6e8c3', flatShading: true });
@@ -53,13 +55,30 @@ export class Player {
         moveDir.normalize();
         this.velocity.copy(moveDir).multiplyScalar(this.speed * delta);
         this.position.add(this.velocity);
+        this.clampToBoundary();
         this.gentlyTurnToward(moveDir, delta);
       }
     } else {
       this.velocity.setScalar(0);
     }
 
+    this.checkBoundaryProximity();
     this.alignToCamera();
+  }
+
+  clampToBoundary() {
+    const halfSize = this.world.worldSize / 2;
+    this.position.x = THREE.MathUtils.clamp(this.position.x, -halfSize, halfSize);
+    this.position.z = THREE.MathUtils.clamp(this.position.z, -halfSize, halfSize);
+  }
+
+  checkBoundaryProximity() {
+    const halfSize = this.world.worldSize / 2;
+    const margin = this.boundaryMargin;
+    const atEdge =
+      Math.abs(this.position.x) >= halfSize - margin ||
+      Math.abs(this.position.z) >= halfSize - margin;
+    this.atBoundary = atEdge;
   }
 
   gentlyTurnToward(direction, delta) {
