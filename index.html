@@ -58,6 +58,17 @@
       bottom: 12px;
       white-space: nowrap;
       pointer-events: none;
+      background: rgba(0,0,0,0.35);
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    #control-hint .pill-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
     }
     #seed {
       position: absolute;
@@ -65,10 +76,39 @@
       bottom: 8px;
       font-size: 11px;
       opacity: 0.75;
-      background: rgba(0,0,0,0.35);
-      padding: 4px 6px;
-      border-radius: 4px;
+      background: rgba(255,255,255,0.08);
+      padding: 4px 8px;
+      border-radius: 999px;
       pointer-events: none;
+    }
+    #seed::after {
+      content: '';
+      position: absolute;
+      top: -6px;
+      right: -6px;
+      bottom: -6px;
+      left: -6px;
+      background: rgba(0,0,0,0.35);
+      border-radius: 8px;
+      z-index: -1;
+    }
+    #boundary-msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      background: rgba(0,0,0,0.35);
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    #boundary-msg .pill-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
     }
     #win {
       position: absolute;
@@ -166,7 +206,7 @@
       color: #0b141a;
       font-weight: 700;
       border: none;
-      display: none;
+      display: block;
       pointer-events: auto;
       touch-action: manipulation;
       transition: background 0.2s ease, color 0.2s ease, opacity 0.2s ease;
@@ -183,7 +223,7 @@
       opacity: 0.65;
     }
     @media (max-width: 900px) {
-      #joystick, #interact-btn { display: block; }
+      #joystick { display: block; }
       #hud { font-size: 13px; }
     }
   </style>
@@ -204,9 +244,10 @@
       <div class="pill">🪨 Stone: <span id="stone-count">0</span>/10</div>
       <div class="pill">🌽 Corn: <span id="corn-count">0</span>/10</div>
     </div>
-    <div id="control-hint" class="pill legend">WASD/drag to move + look, E/tap to collect</div>
+    <div id="control-hint"><span class="pill-inner legend">WASD/drag to move + look, E/tap to collect</span></div>
   </div>
   <div id="seed"></div>
+  <div id="boundary-msg" style="display: none;"><span class="pill-inner">⚠️ You cannot go that way</span></div>
   <div id="win">
     <h2>All gathered!</h2>
     <p>You collected everything. Great exploring!</p>
