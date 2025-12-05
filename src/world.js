@@ -23,12 +23,12 @@ function lerp(a, b, t) {
 }
 
 export class World {
-  constructor(seed, { mapSize } = {}) {
+  constructor(seed, { mapSize, maxTerrainHeight } = {}) {
     this.seed = seed;
     this.worldSize = mapSize ?? 140;
     this.gridResolution = 96;
     this.heightMap = [];
-    this.heightScale = 6;
+    this.heightScale = maxTerrainHeight ?? 6;
     this.noiseScale = 14;
     this.rng = mulberry32(hashString(seed));
     this.mesh = this.buildTerrain();
