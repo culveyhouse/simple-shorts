@@ -6,7 +6,7 @@ import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
 const GAME_TUNING = {
-  version: 'v0.3.8',
+  version: 'v0.3.9',
   map: {
     baseSize: 200,
     maxTerrainHeight: 12,
@@ -69,7 +69,7 @@ class Game {
     this.scene = createScene();
     this.renderer = createRenderer();
     this.camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
-    this.world = new World(this.seed, { mapSize, maxTerrainHeight: GAME_TUNING.map.maxTerrainHeight });
+    this.world = new World(this.seed, { mapSize, maxTerrainHeight: GAME_TUNING.map.maxTerrainHeight, baseSize: GAME_TUNING.map.baseSize });
     this.tuning = GAME_TUNING;
     this.input = new Input(this.renderer.domElement, this.tuning.collection);
     this.player = new Player(this.world, this.input, this.tuning.turnAssist);
