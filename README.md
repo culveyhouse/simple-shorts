@@ -3,10 +3,9 @@
 A tiny low-poly voxel exploration game built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.3.9**
-- What's new in v0.3.9:
-  - Fixed terrain polygon scaling to maintain consistent polygon density regardless of map size.
-  - Terrain now generates proportionally more polygons for larger maps instead of stretching.
+- Current release: **v0.4.0**
+- What's new in v0.4.0:
+  - Version bump release.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
