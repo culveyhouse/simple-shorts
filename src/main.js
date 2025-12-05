@@ -8,8 +8,8 @@ import { UIOverlay } from './ui.js';
 const GAME_TUNING = {
   version: 'v0.3.8',
   map: {
-    baseSize: 140,
-    maxTerrainHeight: 6,
+    baseSize: 200,
+    maxTerrainHeight: 12,
     slider: { min: 1, max: 10, step: 1, default: 1 },
   },
   collection: {
@@ -20,8 +20,8 @@ const GAME_TUNING = {
   },
   turnAssist: {
     arcRadians: Math.PI / 5,
-    strengthScale: 5,
-    strengthMax: 0.18,
+    strengthScale: 4,
+    strengthMax: 0.15,
   },
 };
 
