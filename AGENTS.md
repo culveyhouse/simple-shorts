@@ -1,5 +1,6 @@
 # Agent Guidelines
 
+- **Player experience is the top priority.** UI/UX must always be double-checked to ensure the fewest bugs and the best player experience possible.
 - Prefer clear, commented ES module code under `src/` with descriptive function and class names.
 - Keep dependencies minimal; rely on CDNs for browser libraries instead of adding build steps.
 - Favor readability over micro-optimizations; keep functions under ~60 lines when possible.

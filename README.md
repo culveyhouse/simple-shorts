@@ -3,10 +3,9 @@
 A tiny low-poly voxel exploration game built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.3.7**
-- What's new in v0.3.7:
-  - Added invisible boundary at map edges with a temporary chip message ("You cannot go that way") when the player gets close.
-  - The player can no longer walk past the terrain boundaries; the message disappears when moving away from the edge.
+- Current release: **v0.4.0**
+- What's new in v0.4.0:
+  - Version bump release.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.

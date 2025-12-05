@@ -23,12 +23,16 @@ function lerp(a, b, t) {
 }
 
 export class World {
-  constructor(seed, { mapSize } = {}) {
+  constructor(seed, { mapSize, maxTerrainHeight, baseSize = 200 } = {}) {
     this.seed = seed;
     this.worldSize = mapSize ?? 140;
-    this.gridResolution = 96;
+    // Scale grid resolution with map size to maintain consistent polygon density
+    // Base resolution of 96 for base size, scaled proportionally
+    const baseGridResolution = 96;
+    const sizeMultiplier = this.worldSize / baseSize;
+    this.gridResolution = Math.round(baseGridResolution * sizeMultiplier);
     this.heightMap = [];
-    this.heightScale = 6;
+    this.heightScale = maxTerrainHeight ?? 6;
     this.noiseScale = 14;
     this.rng = mulberry32(hashString(seed));
     this.mesh = this.buildTerrain();
