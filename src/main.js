@@ -6,7 +6,7 @@ import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
 const GAME_TUNING = {
-  version: 'v0.3.6',
+  version: 'v0.3.7',
   map: {
     baseSize: 140,
     slider: { min: 1, max: 10, step: 1, default: 1 },
@@ -78,6 +78,7 @@ class Game {
       seed: this.seed,
       onRestart: () => this.restart(),
     });
+    this.boundaryMsgEl = document.getElementById('boundary-msg');
 
     this.scene.add(this.world.mesh);
     this.scene.add(this.world.campGroup);
@@ -107,6 +108,11 @@ class Game {
     this.player.update(delta, this.camera);
     const nearestDistance = this.resources.getNearestDistance(this.player.position);
     this.input.updateInteractButtonState(nearestDistance);
+
+    // Show/hide boundary message based on player proximity to map edge
+    if (this.boundaryMsgEl) {
+      this.boundaryMsgEl.style.display = this.player.atBoundary ? 'block' : 'none';
+    }
 
     const collected = this.resources.tryCollect(this.player, this.input.consumeInteract());
     if (collected) {

@@ -92,6 +92,24 @@
       border-radius: 8px;
       z-index: -1;
     }
+    #boundary-msg {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+      background: rgba(0,0,0,0.35);
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+    #boundary-msg .pill-inner {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.08);
+    }
     #win {
       position: absolute;
       top: 50%;
@@ -229,6 +247,7 @@
     <div id="control-hint"><span class="pill-inner legend">WASD/drag to move + look, E/tap to collect</span></div>
   </div>
   <div id="seed"></div>
+  <div id="boundary-msg" style="display: none;"><span class="pill-inner">⚠️ You cannot go that way</span></div>
   <div id="win">
     <h2>All gathered!</h2>
     <p>You collected everything. Great exploring!</p>
