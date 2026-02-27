@@ -3,9 +3,11 @@
 A tiny low-poly voxel exploration game built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.4.0**
-- What's new in v0.4.0:
-  - Version bump release.
+- Current release: **v0.4.13**
+- What's new in v0.4.13:
+  - Jetpack launch retry is now allowed while moving on variable terrain, including slopes/valleys.
+  - Holding space through landing now prevents immediate relaunch until the key is pressed again.
+  - See [CHANGELOG](CHANGELOG.md) for milestone release history.
 
 ## Features
 - Procedural terrain seeded per session, with the active seed shown in the corner.
@@ -21,8 +23,16 @@ A tiny low-poly voxel exploration game built with Three.js. Collect 10 wood, 10 
    or use any static server you prefer.
 2. Open `http://localhost:8080` (or your chosen port) in a modern browser.
 
+## Codespaces Live Preview
+- This repo includes a `.devcontainer/devcontainer.json` that auto-starts `live-server` on port `8080` when the Codespace starts.
+- Open the forwarded `8080` port from the **Ports** tab to play-test immediately.
+- If you stop the server manually, restart it with:
+  ```bash
+  bash .devcontainer/start-dev-server.sh
+  ```
+
 ## Controls
-- **Desktop:** WASD/arrow keys to move, drag the mouse to rotate (pitch and yaw), **E** to collect nearby resources.
+- **Desktop:** WASD/arrow keys to move, always-on mouselook, hold **Spacebar** for sustained jet lift, **E** to collect nearby resources.
 - **Mobile:** On-screen joystick (larger activation/drag area) to move, drag the right side to look freely even while idle, tap the **Collect** button or simply get close to a resource to auto-pickup.
 
 ## Project Layout

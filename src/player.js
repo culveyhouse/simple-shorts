@@ -6,13 +6,30 @@ export class Player {
     this.world = world;
     this.input = input;
     this.turnAssistConfig = turnAssistConfig;
-    this.position = new THREE.Vector3(0, world.getHeight(0, 0) + 2.6, 0);
+    this.groundOffset = 2.4;
+    this.position = new THREE.Vector3(0, world.getHeight(0, 0) + this.groundOffset, 0);
     this.velocity = new THREE.Vector3();
+    this.verticalVelocity = 0;
+    this.jetCharge = 0;
+    this.jetActive = false;
+    this.jetPressQueued = false;
+    this.preventHoldRelight = false;
     this.speed = 16;
+    this.jetLift = 54;
+    this.jetGravity = 11.2;
+    this.jetChargeRate = 0.8;
+    this.jetFuelMax = 1.55;
+    this.jetFuel = this.jetFuelMax;
+    this.maxAscentSpeed = 15;
+    this.maxDescentSpeed = 6;
+    this.groundJetTolerance = 1.2;
+    this.groundJetGrace = 0.14;
+    this.groundJetWindow = 0;
+    this.atBoundary = false;
+    this.isGrounded = true;
     this.yaw = 0;
     this.pitch = -0.28;
     this.targetCameraOffset = new THREE.Vector3(0, 5, 10);
-    this.atBoundary = false;
     this.boundaryMargin = 5; // Distance from edge to start showing warning
 
     const bodyGeo = new THREE.CapsuleGeometry(0.7, 1.4, 4, 8);
@@ -26,8 +43,8 @@ export class Player {
   update(delta, camera) {
     this.handleRotation(delta);
     this.handleMovement(delta);
+    this.updateVerticalMotion(delta);
     this.updateCamera(camera, delta);
-    this.applyGroundSnap();
     this.mesh.position.copy(this.position);
   }
 
@@ -35,7 +52,7 @@ export class Player {
     const look = this.input.getLookDelta();
     this.yaw -= look.x * 0.003;
     this.pitch -= look.y * 0.003;
-    this.pitch = Math.min(Math.max(this.pitch, -1.1), 0.2);
+    this.pitch = Math.min(Math.max(this.pitch, -1.1), Math.PI / 6);
   }
 
   handleMovement(delta) {
@@ -64,6 +81,92 @@ export class Player {
 
     this.checkBoundaryProximity();
     this.alignToCamera();
+  }
+
+  updateVerticalMotion(delta) {
+    const groundY = this.world.getHeight(this.position.x, this.position.z) + this.groundOffset;
+    const wantsToJet = this.input.consumeJetInput();
+    const jetHeld = this.input.isJetHeld();
+    const wasGrounded = this.isGrounded;
+    const heightAboveGround = this.position.y - groundY;
+    const nearGroundForJet = heightAboveGround <= this.groundJetTolerance;
+    const isOnOrBelowGround = this.position.y <= groundY;
+
+    if (wantsToJet) this.jetPressQueued = true;
+    if (!jetHeld) {
+      this.jetPressQueued = false;
+      this.preventHoldRelight = false;
+    }
+
+    this.groundJetWindow = isOnOrBelowGround || nearGroundForJet || wasGrounded
+      ? this.groundJetGrace
+      : Math.max(0, this.groundJetWindow - delta);
+
+    if (isOnOrBelowGround) {
+      this.isGrounded = true;
+      this.verticalVelocity = 0;
+      this.position.y = groundY;
+      this.jetFuel = this.jetFuelMax;
+      this.jetCharge = 0;
+      this.jetActive = false;
+      if (!wasGrounded && jetHeld) {
+        this.preventHoldRelight = true;
+      }
+    } else {
+      this.isGrounded = false;
+    }
+
+    if (
+      this.jetPressQueued
+      && jetHeld
+      && !this.jetActive
+      && this.jetFuel > 0
+      && !this.preventHoldRelight
+      && (isOnOrBelowGround || nearGroundForJet || this.groundJetWindow > 0 || wasGrounded)
+    ) {
+      this.jetActive = true;
+      this.jetPressQueued = false;
+    }
+
+    if (!jetHeld) {
+      this.jetActive = false;
+    }
+
+    if (this.jetActive && this.jetFuel <= 0) {
+      this.jetActive = false;
+    }
+
+    if (this.jetActive && jetHeld) {
+      this.jetCharge = Math.min(1, this.jetCharge + this.jetChargeRate * delta);
+      this.jetFuel = Math.max(0, this.jetFuel - delta);
+      this.verticalVelocity += this.jetLift * this.jetCharge ** 1.6 * delta;
+      this.verticalVelocity = Math.min(this.verticalVelocity, this.maxAscentSpeed);
+    } else {
+      this.jetCharge = 0;
+      this.verticalVelocity -= this.jetGravity * delta;
+      this.jetFuel = Math.min(this.jetFuel, this.jetFuelMax);
+    }
+
+    this.verticalVelocity = Math.max(
+      -this.maxDescentSpeed,
+      Math.min(this.verticalVelocity, this.maxAscentSpeed),
+    );
+
+    const nextY = this.position.y + this.verticalVelocity * delta;
+    if (nextY <= groundY) {
+      this.position.y = groundY;
+      this.verticalVelocity = 0;
+      this.isGrounded = true;
+      this.jetFuel = this.jetFuelMax;
+      this.jetCharge = 0;
+      this.jetActive = false;
+      if (jetHeld) {
+        this.preventHoldRelight = true;
+      }
+      return;
+    }
+
+    this.position.y = nextY;
   }
 
   clampToBoundary() {
@@ -98,12 +201,6 @@ export class Player {
 
   alignToCamera() {
     this.mesh.rotation.y = this.yaw;
-  }
-
-  applyGroundSnap() {
-    const groundY = this.world.getHeight(this.position.x, this.position.z);
-    const targetY = groundY + 2.4;
-    this.position.y = THREE.MathUtils.lerp(this.position.y, targetY, 0.2);
   }
 
   updateCamera(camera, delta) {

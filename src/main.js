@@ -6,7 +6,7 @@ import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
 const GAME_TUNING = {
-  version: 'v0.4.0',
+  version: 'v0.4.13',
   map: {
     baseSize: 200,
     maxTerrainHeight: 12,
@@ -72,6 +72,7 @@ class Game {
     this.world = new World(this.seed, { mapSize, maxTerrainHeight: GAME_TUNING.map.maxTerrainHeight, baseSize: GAME_TUNING.map.baseSize });
     this.tuning = GAME_TUNING;
     this.input = new Input(this.renderer.domElement, this.tuning.collection);
+    this.input.enableMouseControls();
     this.player = new Player(this.world, this.input, this.tuning.turnAssist);
     this.resources = new ResourceManager(this.world, this.scene, this.tuning.collection);
     this.ui = new UIOverlay({
@@ -122,6 +123,7 @@ class Game {
         this.gameOver = true;
         this.ui.showWin();
         this.input.disableMobileControls();
+        this.input.disableMouseControls();
       }
     }
     this.world.updateCampFire(delta);

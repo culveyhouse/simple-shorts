@@ -1,0 +1,11 @@
+{
+  "name": "simple-shorts",
+  "forwardPorts": [8080],
+  "portsAttributes": {
+    "8080": {
+      "label": "Game Preview",
+      "onAutoForward": "openBrowser"
+    }
+  },
+  "postStartCommand": "bash .devcontainer/start-dev-server.sh"
+}

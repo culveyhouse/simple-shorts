@@ -7,7 +7,6 @@ export class Input {
     this.lookDelta = new THREE.Vector2();
     this.moveVector = new THREE.Vector3();
     this.interactQueued = false;
-    this.dragging = false;
     this.lastPointer = null;
     this.nearestDistance = Infinity;
 
@@ -17,6 +16,9 @@ export class Input {
     this.isMobile = window.matchMedia('(max-width: 900px)').matches;
     this.lookTouch = false;
     this.interactRange = collectionConfig.interactButtonRange ?? 3.2;
+    this.pointerLockActive = false;
+    this.jetQueued = false;
+    this.jetHeld = false;
 
     this.bindEvents();
     this.updateInteractButtonState(Infinity);
@@ -25,13 +27,27 @@ export class Input {
   bindEvents() {
     window.addEventListener('keydown', (e) => {
       const key = e.key.toLowerCase();
+      if (key === ' ' || key === 'spacebar') {
+        e.preventDefault();
+        if (!this.jetHeld) {
+          this.jetQueued = true;
+        }
+        this.jetHeld = true;
+      }
       this.keys.add(key);
       if (key === 'e') this.queueInteract();
     });
-    window.addEventListener('keyup', (e) => this.keys.delete(e.key.toLowerCase()));
-    window.addEventListener('mousedown', (e) => this.startDrag(e));
-    window.addEventListener('mousemove', (e) => this.onDrag(e));
-    window.addEventListener('mouseup', () => this.stopDrag());
+    window.addEventListener('keyup', (e) => {
+      const key = e.key.toLowerCase();
+      if (key === ' ' || key === 'spacebar') this.jetHeld = false;
+      this.keys.delete(key);
+    });
+    window.addEventListener('mousemove', (e) => this.onMouseMove(e));
+    if (!this.isMobile) {
+      this.canvas.addEventListener('click', () => this.requestMouseLock());
+      document.addEventListener('pointerlockchange', () => this.handlePointerLockChange());
+      document.addEventListener('pointerlockerror', () => this.handlePointerLockError());
+    }
     window.addEventListener('touchstart', (e) => this.handleTouchStart(e), { passive: false });
     window.addEventListener('touchmove', (e) => this.handleTouchMove(e), { passive: false });
     window.addEventListener('touchend', () => this.handleTouchEnd());
@@ -48,22 +64,49 @@ export class Input {
     this.interactButton.classList.toggle('out-of-range', !inRange);
   }
 
-  startDrag(event) {
-    if (event.target === this.interactButton) return;
-    this.dragging = true;
-    this.lastPointer = new THREE.Vector2(event.clientX, event.clientY);
-  }
+  onMouseMove(event) {
+    if (this.isMobile || event.target === this.interactButton) return;
 
-  onDrag(event) {
-    if (!this.dragging) return;
+    if (this.pointerLockActive) {
+      this.lookDelta.add(new THREE.Vector2(event.movementX || 0, event.movementY || 0));
+      return;
+    }
+
     const current = new THREE.Vector2(event.clientX, event.clientY);
-    const delta = current.clone().sub(this.lastPointer);
-    this.lookDelta.add(delta);
+    if (this.lastPointer) {
+      const delta = current.clone().sub(this.lastPointer);
+      this.lookDelta.add(delta);
+    }
     this.lastPointer = current;
   }
 
+  requestMouseLock() {
+    if (this.pointerLockActive || this.isMobile) return;
+    if (typeof this.canvas.requestPointerLock !== 'function') return;
+    this.canvas.requestPointerLock();
+  }
+
+  releaseMouseLock() {
+    if (!this.pointerLockActive || typeof document.exitPointerLock !== 'function') return;
+    document.exitPointerLock();
+  }
+
+  handlePointerLockChange() {
+    this.pointerLockActive = document.pointerLockElement === this.canvas;
+    if (!this.pointerLockActive) {
+      this.lastPointer = null;
+    }
+    if (this.interactButton) {
+      this.interactButton.style.pointerEvents = this.pointerLockActive ? 'none' : 'auto';
+    }
+  }
+
+  handlePointerLockError() {
+    this.pointerLockActive = false;
+    this.lastPointer = null;
+  }
+
   stopDrag() {
-    this.dragging = false;
     this.lastPointer = null;
   }
 
@@ -85,7 +128,6 @@ export class Input {
       this.joystick.style.left = `${this.touchOrigin.x - rect.width / 2}px`;
       this.joystick.style.top = `${this.touchOrigin.y - rect.height / 2}px`;
     } else {
-      this.dragging = true;
       this.lookTouch = true;
       this.lastPointer = new THREE.Vector2(touch.clientX, touch.clientY);
     }
@@ -104,7 +146,7 @@ export class Input {
       const clamped = delta.clone().clampLength(0, maxDist);
       this.knob.style.transform = `translate(${clamped.x}px, ${clamped.y}px)`;
       this.moveVector.set(clamped.x / maxDist, 0, clamped.y / maxDist);
-    } else if (this.lookTouch && this.dragging) {
+    } else if (this.lookTouch) {
       const delta = current.clone().sub(this.lastPointer);
       this.lookDelta.add(delta);
       this.lastPointer = current;
@@ -138,10 +180,20 @@ export class Input {
     this.moveVector.set(0, 0, 0);
     this.touchOrigin = null;
     this.lookTouch = false;
-    this.dragging = false;
     this.knob.style.transform = 'translate(0px, 0px)';
     this.joystick.style.display = 'none';
     this.interactButton.style.display = 'none';
+  }
+
+  disableMouseControls() {
+    this.releaseMouseLock();
+    if (!this.isMobile && this.interactButton) {
+      this.interactButton.style.pointerEvents = 'auto';
+    }
+  }
+
+  enableMouseControls() {
+    this.requestMouseLock();
   }
 
   getMoveVector() {
@@ -162,5 +214,15 @@ export class Input {
     const delta = this.lookDelta.clone();
     this.lookDelta.set(0, 0);
     return delta;
+  }
+
+  isJetHeld() {
+    return this.jetHeld;
+  }
+
+  consumeJetInput() {
+    if (!this.jetQueued) return false;
+    this.jetQueued = false;
+    return true;
   }
 }
