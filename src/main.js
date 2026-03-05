@@ -6,7 +6,7 @@ import { ResourceManager } from './resources.js';
 import { UIOverlay } from './ui.js';
 
 const GAME_TUNING = {
-  version: 'v0.4.13',
+  version: 'v0.4.14',
   map: {
     baseSize: 200,
     maxTerrainHeight: 12,

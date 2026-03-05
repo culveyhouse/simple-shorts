@@ -3,10 +3,10 @@
 A tiny low-poly voxel exploration game built with Three.js. Collect 10 wood, 10 stone, and 10 corn around your camp with third-person controls that work on desktop and mobile.
 
 ## Version
-- Current release: **v0.4.13**
-- What's new in v0.4.13:
-  - Jetpack launch retry is now allowed while moving on variable terrain, including slopes/valleys.
-  - Holding space through landing now prevents immediate relaunch until the key is pressed again.
+- Current release: **v0.4.14**
+- What's new in v0.4.14:
+  - Stable release checkpoint for the current gameplay and controls tuning.
+  - Documentation and release notes refreshed for the latest tagged build.
   - See [CHANGELOG](CHANGELOG.md) for milestone release history.
 
 ## Features
