@@ -10,9 +10,9 @@ export class Player {
     this.position = new THREE.Vector3(0, world.getHeight(0, 0) + this.groundOffset, 0);
     this.velocity = new THREE.Vector3();
     this.verticalVelocity = 0;
+    this.jumpVelocity = 6;
     this.jetCharge = 0;
     this.jetActive = false;
-    this.jetPressQueued = false;
     this.preventHoldRelight = false;
     this.speed = 16;
     this.jetLift = 54;
@@ -22,9 +22,6 @@ export class Player {
     this.jetFuel = this.jetFuelMax;
     this.maxAscentSpeed = 15;
     this.maxDescentSpeed = 6;
-    this.groundJetTolerance = 1.2;
-    this.groundJetGrace = 0.14;
-    this.groundJetWindow = 0;
     this.atBoundary = false;
     this.isGrounded = true;
     this.yaw = 0;
@@ -85,22 +82,14 @@ export class Player {
 
   updateVerticalMotion(delta) {
     const groundY = this.world.getHeight(this.position.x, this.position.z) + this.groundOffset;
-    const wantsToJet = this.input.consumeJetInput();
+    const wantsAction = this.input.consumeSpacePress();
     const jetHeld = this.input.isJetHeld();
     const wasGrounded = this.isGrounded;
-    const heightAboveGround = this.position.y - groundY;
-    const nearGroundForJet = heightAboveGround <= this.groundJetTolerance;
     const isOnOrBelowGround = this.position.y <= groundY;
 
-    if (wantsToJet) this.jetPressQueued = true;
     if (!jetHeld) {
-      this.jetPressQueued = false;
       this.preventHoldRelight = false;
     }
-
-    this.groundJetWindow = isOnOrBelowGround || nearGroundForJet || wasGrounded
-      ? this.groundJetGrace
-      : Math.max(0, this.groundJetWindow - delta);
 
     if (isOnOrBelowGround) {
       this.isGrounded = true;
@@ -116,16 +105,22 @@ export class Player {
       this.isGrounded = false;
     }
 
-    if (
-      this.jetPressQueued
+    if (wantsAction && this.isGrounded) {
+      this.isGrounded = false;
+      this.verticalVelocity = this.jumpVelocity;
+      this.jetActive = false;
+      this.jetCharge = 0;
+      // Require a release before jet activation to match tap-jump then re-press jet behavior.
+      this.preventHoldRelight = true;
+    } else if (
+      wantsAction
+      && !this.isGrounded
       && jetHeld
       && !this.jetActive
       && this.jetFuel > 0
       && !this.preventHoldRelight
-      && (isOnOrBelowGround || nearGroundForJet || this.groundJetWindow > 0 || wasGrounded)
     ) {
       this.jetActive = true;
-      this.jetPressQueued = false;
     }
 
     if (!jetHeld) {

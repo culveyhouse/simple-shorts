@@ -2,6 +2,11 @@
 
 All notable changes for major milestone releases.
 
+## [v0.4.15] - 2026-03-05
+- Added a distinct desktop tap jump with Spacebar for a short, quick hop.
+- Updated jetpack activation to require an airborne Spacebar re-press, with hold-to-sustain using the existing thrust/fuel/arc tuning.
+- Kept mobile controls unchanged.
+
 ## [v0.4.14] - 2026-03-05
 - Marked the current build as a stable release checkpoint.
 - Updated versioned documentation and release metadata for tagging.

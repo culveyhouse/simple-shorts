@@ -17,7 +17,7 @@ export class Input {
     this.lookTouch = false;
     this.interactRange = collectionConfig.interactButtonRange ?? 3.2;
     this.pointerLockActive = false;
-    this.jetQueued = false;
+    this.spacePressQueued = false;
     this.jetHeld = false;
 
     this.bindEvents();
@@ -30,7 +30,7 @@ export class Input {
       if (key === ' ' || key === 'spacebar') {
         e.preventDefault();
         if (!this.jetHeld) {
-          this.jetQueued = true;
+          this.spacePressQueued = true;
         }
         this.jetHeld = true;
       }
@@ -220,9 +220,9 @@ export class Input {
     return this.jetHeld;
   }
 
-  consumeJetInput() {
-    if (!this.jetQueued) return false;
-    this.jetQueued = false;
+  consumeSpacePress() {
+    if (!this.spacePressQueued) return false;
+    this.spacePressQueued = false;
     return true;
   }
 }
