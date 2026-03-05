@@ -7,3 +7,4 @@
 - Update documentation (`README.md`) whenever you add or change features in the web game.
 - Keep UI text concise and friendly.
 - When changing the version, bump it in both the README and the on-screen display so they stay in sync.
+- Always use multiline commit messages (subject + body), prefer heredoc-style commit entry, and include a medium-length body when changes are non-trivial.
